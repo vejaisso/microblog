@@ -1,0 +1,128 @@
+﻿const Post = require('../models/Post');
+const { getUserById } = require('../services/userService');
+const { Op } = require('sequelize');
+require('dotenv').config();
+
+const securityLevel = parseInt(process.env.SECURITY_LEVEL || '1');
+
+exports.createPost = async (req, res) => {
+  const { content } = req.body;
+  const token = req.headers.authorization?.split(' ')[1];
+
+  // Se não houver token e não for nível 1, retorna erro
+  if (!token && parseInt(process.env.SECURITY_LEVEL || '1') !== 1) {
+    return res.status(401).json({ error: 'Token necessário' });
+  }
+
+  try {
+    let departmentId;
+
+    // Nível 1: pode vir do corpo da requisição (fallback)
+    if (parseInt(process.env.SECURITY_LEVEL || '1') === 1) {
+      departmentId = req.body.departmentId || req.query.departmentId || 1;
+    } else {
+      // Níveis >=2: obrigatoriamente do token
+      if (!req.user || !req.user.departmentId) {
+        console.error('Erro: departmentId não encontrado no token', req.user);
+        return res.status(400).json({ error: 'DepartmentId não disponível no token' });
+      }
+      departmentId = req.user.departmentId;
+    }
+
+    const post = await Post.create({
+      content,
+      userId: req.user.id,
+      departmentId,
+      visible: true
+    });
+    res.status(201).json(post);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Erro ao criar post' });
+  }
+};
+
+exports.listPosts = async (req, res) => {
+  console.log('=== listPosts DEBUG ===');
+  console.log('req.user:', JSON.stringify(req.user, null, 2));
+  const isAdmin = req.user?.role === 'ADMIN';
+  const currentDept = req.user?.departmentId;
+  const currentUserId = req.user?.id;
+
+  if (!isAdmin && (currentDept === undefined || currentDept === null)) {
+    console.error('❌ departmentId inválido, retornando lista vazia');
+    return res.json([]);
+  }
+
+  let where = {};
+  if (isAdmin) {
+    where = {};
+  } else {
+    where = {
+      [Op.or]: [
+        { departmentId: currentDept, visible: true },
+        { userId: currentUserId }
+      ]
+    };
+  }
+  console.log('WHERE:', JSON.stringify(where));
+  const posts = await Post.findAll({ where, order: [['createdAt', 'DESC']] });
+  console.log(`Encontrados ${posts.length} posts`);
+  res.json(posts);
+};
+
+exports.getPost = async (req, res) => {
+  const post = await Post.findByPk(req.params.id);
+  if (!post) return res.status(404).json({ error: 'Post não encontrado' });
+  res.json(post);
+};
+
+exports.updatePost = async (req, res) => {
+  const { id } = req.params;
+  const post = await Post.findByPk(id);
+  if (!post) return res.status(404).json({ error: 'Post não encontrado' });
+
+  if (securityLevel >= 3) {
+    if (post.userId !== req.user.id && req.user.role !== 'ADMIN') {
+      return res.status(403).json({ error: 'Você só pode editar seus próprios posts' });
+    }
+  }
+
+  await post.update(req.body);
+  res.json(post);
+};
+
+exports.setVisibility = async (req, res) => {
+  const { id } = req.params;
+  const { visible } = req.body;
+  const post = await Post.findByPk(id);
+  if (!post) return res.status(404).json({ error: 'Post não encontrado' });
+
+  if (securityLevel >= 3) {
+    if (post.userId !== req.user.id && req.user.role !== 'ADMIN') {
+      return res.status(403).json({ error: 'Você só pode alterar visibilidade dos seus próprios posts' });
+    }
+  }
+
+  await post.update({ visible });
+  res.json(post);
+};
+
+exports.deletePost = async (req, res) => {
+  if (securityLevel === 1) {
+    const post = await Post.findByPk(req.params.id);
+    if (!post) return res.status(404).json({ error: 'Post não encontrado' });
+    await post.destroy();
+    return res.status(204).send();
+  }
+
+  if (req.user.role !== 'ADMIN') {
+    return res.status(403).json({ error: 'Apenas administradores podem excluir posts' });
+  }
+
+  const post = await Post.findByPk(req.params.id);
+  if (!post) return res.status(404).json({ error: 'Post não encontrado' });
+  await post.destroy();
+  res.status(204).send();
+};
+
