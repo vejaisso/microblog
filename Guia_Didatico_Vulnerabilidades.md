@@ -377,35 +377,3 @@ Content-Type: application/json
 
 > **Nota:** Todas as falhas giram em torno da categoria A01:2021 — Broken Access Control, a vulnerabilidade mais prevalente em aplicações web segundo o OWASP.
 
----
-
-## 7. Atividade: Relatório Técnico
-
-Após realizar todos os testes, elabore um **relatório técnico** respondendo aos itens abaixo.
-
-### 7.1. Análise das Causas
-
-Para **cada uma das vulnerabilidades encontradas**, responda:
-
-- Em qual endpoint ou trecho de código a falha está localizada?
-- Qual princípio de segurança foi violado? (menor privilégio, validação de propriedade, separação de funções, etc.)
-- A falha é no backend, no frontend, ou em ambos?
-
-
-### 7.2. Reflexão
-
-Responda às três perguntas abaixo com no mínimo um parágrafo cada:
-
-**a)** Por que a abordagem de "confiar no front-end para controlar o acesso" é perigosa? Dê um exemplo concreto usando este projeto.
-
-**b)** Qual seria a estratégia de longo prazo para evitar que essas vulnerabilidades voltem a aparecer em projetos futuros? Considere: testes automatizados de segurança, revisão de código, bibliotecas de autorização (ex: CASL, accesscontrol), e integração com pipelines CI/CD.
-
-**c)** Como você projetaria o sistema desde o início para garantir isolamento por departamento e autorização granular? Pense em: onde essa lógica viveria no código, como seria testada e como seria documentada para novos desenvolvedores no projeto.
-
-## 8. Referências Bibliográficas
-
-- OWASP Foundation. *OWASP Top 10 – 2021*. Disponível em: https://owasp.org/Top10/. Acesso em: abr. 2026.
-- OWASP Foundation. *OWASP API Security Top 10*. Disponível em: https://owasp.org/www-project-api-security/. Acesso em: abr. 2026.
-- STALLINGS, William; BROWN, Lawrie. *Segurança de Computadores: Princípios e Práticas*. 2. ed. Rio de Janeiro: Elsevier, 2014.
-- SÊMOLA, Marcos. *Gestão da Segurança da Informação: Uma Visão Executiva*. 2. ed. Rio de Janeiro: Elsevier, 2014.
-- HINTZBERGEN, Jule et al. *Fundamentos de Segurança da Informação: com base na ISO 27001 e na ISO 27002*. Rio de Janeiro: Brasport, 2018.
