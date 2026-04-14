@@ -377,3 +377,61 @@ Content-Type: application/json
 
 > **Nota:** Todas as falhas giram em torno da categoria A01:2021 — Broken Access Control, a vulnerabilidade mais prevalente em aplicações web segundo o OWASP.
 
+---
+
+## 7. Atividade: Relatório Técnico
+
+Após realizar todos os testes, elabore um **relatório técnico** respondendo aos itens abaixo. O relatório deve ter no máximo **3 páginas** (sem contar código).
+
+### 7.1. Análise das Causas
+
+Para **cada uma das 7 vulnerabilidades**, responda:
+
+- Em qual endpoint ou trecho de código a falha está localizada?
+- Qual princípio de segurança foi violado? (menor privilégio, validação de propriedade, separação de funções, etc.)
+- A falha é no backend, no frontend, ou em ambos?
+
+### 7.2. Proposta de Correção
+
+Para cada falha, escreva o trecho de código corrigido (Node.js/Express) e explique em uma frase por que a correção resolve o problema.
+
+**Exemplo de correção para o Teste 5.2 (edição de post alheio):**
+
+```javascript
+// PUT /api/posts/:id — versão corrigida
+app.put('/api/posts/:id', authenticate, async (req, res) => {
+    const post = await Post.findByPk(req.params.id);
+    if (!post) return res.status(404).json({ error: 'Post não encontrado' });
+
+    // Verifica propriedade: apenas o dono pode editar
+    if (post.userId !== req.user.id) {
+        return res.status(403).json({ error: 'Você só pode editar seus próprios posts' });
+    }
+
+    const { content } = req.body; // aceita apenas o campo content — não req.body inteiro
+    await post.update({ content });
+    res.json(post);
+});
+```
+
+**Por que funciona:** A verificação `post.userId !== req.user.id` garante que somente o autor do post pode editá-lo. O `req.user.id` vem do token JWT, que não pode ser forjado pelo cliente.
+
+### 7.3. Reflexão
+
+Responda às três perguntas abaixo com no mínimo um parágrafo cada:
+
+**a)** Por que a abordagem de "confiar no front-end para controlar o acesso" é perigosa? Dê um exemplo concreto usando este projeto.
+
+**b)** Qual seria a estratégia de longo prazo para evitar que essas vulnerabilidades voltem a aparecer em projetos futuros? Considere: testes automatizados de segurança, revisão de código, bibliotecas de autorização (ex: CASL, accesscontrol), e integração com pipelines CI/CD.
+
+**c)** Como você projetaria o sistema desde o início para garantir isolamento por departamento e autorização granular? Pense em: onde essa lógica viveria no código, como seria testada e como seria documentada para novos desenvolvedores no projeto.
+
+---
+
+## 8. Referências Bibliográficas
+
+- OWASP Foundation. *OWASP Top 10 – 2021*. Disponível em: https://owasp.org/Top10/. Acesso em: abr. 2026.
+- OWASP Foundation. *OWASP API Security Top 10*. Disponível em: https://owasp.org/www-project-api-security/. Acesso em: abr. 2026.
+- STALLINGS, William; BROWN, Lawrie. *Segurança de Computadores: Princípios e Práticas*. 2. ed. Rio de Janeiro: Elsevier, 2014.
+- SÊMOLA, Marcos. *Gestão da Segurança da Informação: Uma Visão Executiva*. 2. ed. Rio de Janeiro: Elsevier, 2014.
+- HINTZBERGEN, Jule et al. *Fundamentos de Segurança da Informação: com base na ISO 27001 e na ISO 27002*. Rio de Janeiro: Brasport, 2018.
