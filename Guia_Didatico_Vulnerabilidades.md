@@ -391,32 +391,8 @@ Para **cada uma das vulnerabilidades encontradas**, responda:
 - Qual princípio de segurança foi violado? (menor privilégio, validação de propriedade, separação de funções, etc.)
 - A falha é no backend, no frontend, ou em ambos?
 
-### 7.2. Proposta de Correção
 
-Para cada falha, escreva o trecho de código corrigido (Node.js/Express) e explique com suas palavras por que a correção resolve o problema.
-
-**Exemplo de correção para o Teste 5.2 (edição de post alheio):**
-
-```javascript
-// PUT /api/posts/:id — versão corrigida
-app.put('/api/posts/:id', authenticate, async (req, res) => {
-    const post = await Post.findByPk(req.params.id);
-    if (!post) return res.status(404).json({ error: 'Post não encontrado' });
-
-    // Verifica propriedade: apenas o dono pode editar
-    if (post.userId !== req.user.id) {
-        return res.status(403).json({ error: 'Você só pode editar seus próprios posts' });
-    }
-
-    const { content } = req.body; // aceita apenas o campo content — não req.body inteiro
-    await post.update({ content });
-    res.json(post);
-});
-```
-
-**Por que funciona:** A verificação `post.userId !== req.user.id` garante que somente o autor do post pode editá-lo. O `req.user.id` vem do token JWT, que não pode ser forjado pelo cliente.
-
-### 7.3. Reflexão
+### 7.2. Reflexão
 
 Responda às três perguntas abaixo com no mínimo um parágrafo cada:
 
