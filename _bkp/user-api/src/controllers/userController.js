@@ -58,7 +58,7 @@ exports.login = async (req, res) => {
   const token = generateToken({
     id: user.id,
     role: user.role,
-    departmentId: user.departmentId   // <--- GARANTA QUE ESTÁ AQUI
+    departmentId: user.departmentId
   });
   res.json({ token, user: { id: user.id, username: user.username, role: user.role, department: user.Department } });
 };
