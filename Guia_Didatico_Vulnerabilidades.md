@@ -381,11 +381,11 @@ Content-Type: application/json
 
 ## 7. Atividade: Relatório Técnico
 
-Após realizar todos os testes, elabore um **relatório técnico** respondendo aos itens abaixo. O relatório deve ter no máximo **3 páginas** (sem contar código).
+Após realizar todos os testes, elabore um **relatório técnico** respondendo aos itens abaixo.
 
 ### 7.1. Análise das Causas
 
-Para **cada uma das 7 vulnerabilidades**, responda:
+Para **cada uma das vulnerabilidades encontradas**, responda:
 
 - Em qual endpoint ou trecho de código a falha está localizada?
 - Qual princípio de segurança foi violado? (menor privilégio, validação de propriedade, separação de funções, etc.)
@@ -393,7 +393,7 @@ Para **cada uma das 7 vulnerabilidades**, responda:
 
 ### 7.2. Proposta de Correção
 
-Para cada falha, escreva o trecho de código corrigido (Node.js/Express) e explique em uma frase por que a correção resolve o problema.
+Para cada falha, escreva o trecho de código corrigido (Node.js/Express) e explique com suas palavras por que a correção resolve o problema.
 
 **Exemplo de correção para o Teste 5.2 (edição de post alheio):**
 
@@ -425,19 +425,6 @@ Responda às três perguntas abaixo com no mínimo um parágrafo cada:
 **b)** Qual seria a estratégia de longo prazo para evitar que essas vulnerabilidades voltem a aparecer em projetos futuros? Considere: testes automatizados de segurança, revisão de código, bibliotecas de autorização (ex: CASL, accesscontrol), e integração com pipelines CI/CD.
 
 **c)** Como você projetaria o sistema desde o início para garantir isolamento por departamento e autorização granular? Pense em: onde essa lógica viveria no código, como seria testada e como seria documentada para novos desenvolvedores no projeto.
-
-### 7.4. Critérios de Avaliação
-
-| Critério | Peso |
-|---|---|
-| Identificação correta das 7 vulnerabilidades (causa + localização no código) | 40% |
-| Qualidade técnica das correções propostas (código funcional e correto) | 35% |
-| Profundidade e clareza da reflexão arquitetural (seção 7.3) | 25% |
-
-**Formato de entrega:** PDF ou documento de texto.
-**Prazo:** conforme cronograma da disciplina.
-
----
 
 ## 8. Referências Bibliográficas
 
