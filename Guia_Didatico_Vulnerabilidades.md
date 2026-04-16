@@ -46,7 +46,7 @@ A aplicação possui dois microsserviços:
 
 **Post:** `id`, `content`, `userId` (autor), `departmentId`, `visible` (booleano)
 
-### Regras de negócio esperadas (não implementadas na versão vulnerável)
+### Regras de negócio esperadas
 
 | Ação | USER | ADMIN |
 |---|:---:|:---:|
@@ -381,11 +381,11 @@ Content-Type: application/json
 
 ## 7. Atividade: Relatório Técnico
 
-Após realizar todos os testes, elabore um **relatório técnico** respondendo aos itens abaixo. O relatório deve ter no máximo **3 páginas** (sem contar código).
+Após realizar todos os testes, elabore um **relatório técnico** respondendo aos itens abaixo.
 
 ### 7.1. Análise das Causas
 
-Para **cada uma das 7 vulnerabilidades**, responda:
+Para **cada uma das vulnerabilidades encontradas**, responda:
 
 - Em qual endpoint ou trecho de código a falha está localizada?
 - Qual princípio de segurança foi violado? (menor privilégio, validação de propriedade, separação de funções, etc.)
